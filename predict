@@ -1,0 +1,125 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.datasets import load_boston
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+import joblib
+# Load the Boston Housing Dataset
+boston = load_boston()
+data = pd.DataFrame(boston.data, columns=boston.feature_names)
+data[# Basic exploration
+print(data.head())
+print(data.describe())
+print(data.info())
+
+# Visualize the distribution of the target variable
+sns.histplot(data['PRICE'], kde=True)
+plt.xlabel('Price in $1000s')
+plt.title('Distribution of House Prices')
+plt.show()
+
+# Correlation matrix
+corr_matrix = data.corr()
+plt.figure(figsize=(12, 8))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Correlation Matrix')
+plt.show()'PRICE'] = boston.target  # Adding the target variable
+# Basic exploration
+print(data.head())
+print(data.describe())
+print(data.info())
+
+# Visualize the distribution of the target variable
+sns.histplot(data['PRICE'], kde=True)
+plt.xlabel('Price in $1000s')
+plt.title('Distribution of House Prices')
+plt.show()
+
+# Correlation matrix
+corr_matrix = data.corr()
+plt.figure(figsize=(12, 8))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Correlation Matrix')
+plt.show()
+# Splitting features and target variable
+X = data.drop('PRICE', axis=1)
+y = data['PRICE']
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+# Linear Regression model
+lr_model = LinearRegression()
+lr_model.fit(X_train_scaled, y_train)
+
+# Predictions and evaluation
+y_pred_lr = lr_model.predict(X_test_scaled)
+lr_mse = mean_squared_error(y_test, y_pred_lr)
+lr_rmse = np.sqrt(lr_mse)
+lr_r2 = r2_score(y_test, y_pred_lr)
+
+print(f'Linear Regression RMSE: {lr_rmse}')
+print(f'Linear Regression R2 Score: {lr_r2}')
+# Random Forest Regressor model
+rf_model = RandomForestRegressor(random_state=42)
+rf_model.fit(X_train_scaled, y_train)
+
+# Predictions and evaluation
+y_pred_rf = rf_model.predict(X_test_scaled)
+rf_mse = mean_squared_error(y_test, y_pred_rf)
+rf_rmse = np.sqrt(rf_mse)
+rf_r2 = r2_score(y_test, y_pred_rf)
+
+print(f'Random Forest RMSE: {rf_rmse}')
+print(f'Random Forest R2 Score: {rf_r2}')
+# Random Forest Regressor model
+rf_model = RandomForestRegressor(random_state=42)
+rf_model.fit(X_train_scaled, y_train)
+
+# Predictions and evaluation
+y_pred_rf = rf_model.predict(X_test_scaled)
+rf_mse = mean_squared_error(y_test, y_pred_rf)
+rf_rmse = np.sqrt(rf_mse)
+rf_r2 = r2_score(y_test, y_pred_rf)
+
+print(f'Random Forest RMSE: {rf_rmse}')
+print(f'Random Forest R2 Score: {rf_r2}')
+# Random Forest Regressor model
+rf_model = RandomForestRegressor(random_state=42)
+rf_model.fit(X_train_scaled, y_train)
+
+# Predictions and evaluation
+y_pred_rf = rf_model.predict(X_test_scaled)
+rf_mse = mean_squared_error(y_test, y_pred_rf)
+rf_rmse = np.sqrt(rf_mse)
+rf_r2 = r2_score(y_test, y_pred_rf)
+
+print(f'Random Forest RMSE: {rf_rmse}')
+print(f'Random Forest R2 Score: {rf_r2}')
+# Plotting actual vs predicted prices
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred_best_rf)
+plt.plot([0, 50], [0, 50], '--k', color='red')
+plt.xlabel('Actual Prices')
+plt.ylabel('Predicted Prices')
+plt.title('Actual vs Predicted Prices')
+plt.show()
+# Save the best model
+joblib.dump(best_rf_model, 'best_rf_house_price_model.pkl')
+# Load the saved model
+loaded_model = joblib.load('best_rf_house_price_model.pkl')
+
+# Predict using the loaded model
+new_predictions = loaded_model.predict(X_test_scaled)
+print(new_predictions[:5])
